@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Tareas2</string>
     <string name="user">Usuario Name</string>
+    <string name="about_app">Acerca de...</string>
+    <string name="open">Abrir</string>
+    <string name="close">Cerrar</string>
 </resources>

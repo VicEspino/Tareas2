@@ -1,7 +1,10 @@
 package com.example.tareas2;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -14,15 +17,19 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements Adapter.ViewHolder.ClickListener{
+import java.util.Objects;
+
+public class MainActivity extends AppCompatActivity implements Adapter.ViewHolder.ClickListener, NavigationView.OnNavigationItemSelectedListener {
     @SuppressWarnings("unused")
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private Adapter adapter;
     private ActionModeCallback actionModeCallback = new ActionModeCallback();
     private ActionMode actionMode;
-
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mToogle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,10 +44,22 @@ public class MainActivity extends AppCompatActivity implements Adapter.ViewHolde
 
         adapter = new Adapter(this);
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
+
+        mDrawerLayout = findViewById(R.id.drawerLayout_principal);
+        mToogle = new ActionBarDrawerToggle(MainActivity.this, mDrawerLayout, R.string.open,R.string.close);
+        mDrawerLayout.addDrawerListener(mToogle);
+        mToogle.syncState();
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        //Objects.requireNonNull(getSupportActionBar()).setElevation(50f);
+        // //tenia una elevacion el floatbuton, por eso no me dejaba,al darle más elevacion a la barra, se detectaba esta
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     @Override
@@ -81,6 +100,15 @@ public class MainActivity extends AppCompatActivity implements Adapter.ViewHolde
             actionMode.setTitle(String.valueOf(count));
             actionMode.invalidate();
         }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        return false;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        return mToogle.onOptionsItemSelected(item);
     }
 
     private class ActionModeCallback implements ActionMode.Callback {
