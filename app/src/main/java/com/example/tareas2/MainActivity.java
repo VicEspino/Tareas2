@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements Adapter.ViewHolde
     private ActionMode actionMode;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToogle;
+
+    Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.ViewHolde
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
 
-        Toolbar toolbar =findViewById(R.id.toolbarMain);
+        toolbar =findViewById(R.id.toolbarMain);
         setSupportActionBar(toolbar);//ordenar bien estas instrucciones, para que sirva la animacion del boton menu
 
         mDrawerLayout = findViewById(R.id.drawerLayout_principal);
@@ -85,6 +87,8 @@ public class MainActivity extends AppCompatActivity implements Adapter.ViewHolde
     public boolean onItemLongClicked(int position) {
         if (actionMode == null) {
             actionMode = startSupportActionMode(actionModeCallback);
+            // actionMode = getSupportActionBar().startActionMode(actionModeCallback);
+            //nel setSupportActionBar(this);
         }
 
         toggleSelection(position);
@@ -107,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.ViewHolde
         if (count == 0) {
             actionMode.finish();
         } else {
-            actionMode.setTitle(String.valueOf(count));
+            actionMode.setTitle(String.valueOf(count) + " Tarea(s)");
             actionMode.invalidate();
         }
     }
