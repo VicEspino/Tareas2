@@ -10,6 +10,10 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity implements Adapter.ViewHolder.ClickListener{
     @SuppressWarnings("unused")
@@ -23,6 +27,13 @@ public class MainActivity extends AppCompatActivity implements Adapter.ViewHolde
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FloatingActionButton floatingActionButton = findViewById(R.id.fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "Awevo", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         adapter = new Adapter(this);
 
