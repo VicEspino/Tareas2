@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
+import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -49,11 +51,19 @@ public class MainActivity extends AppCompatActivity implements Adapter.ViewHolde
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
 
+        Toolbar toolbar =findViewById(R.id.toolbarMain);
+        setSupportActionBar(toolbar);//ordenar bien estas instrucciones, para que sirva la animacion del boton menu
+
         mDrawerLayout = findViewById(R.id.drawerLayout_principal);
         mToogle = new ActionBarDrawerToggle(MainActivity.this, mDrawerLayout, R.string.open,R.string.close);
         mDrawerLayout.addDrawerListener(mToogle);
+
+        //toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mToogle.syncState();
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+//        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
         //Objects.requireNonNull(getSupportActionBar()).setElevation(50f);
         // //tenia una elevacion el floatbuton, por eso no me dejaba,al darle más elevacion a la barra, se detectaba esta
 

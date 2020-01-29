@@ -9,12 +9,31 @@
     android:id="@+id/coordinatorLayout_principal"
     >
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/appBarLayout">
 
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarMain"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:navigationIcon="?homeAsUpIndicator"
+
+
+            />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!--android:elevation="5dp"estaba en el tutorial xd-->
     <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawerLayout_principal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/drawerLayout_principal"
-    >
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        >
 
         <androidx.recyclerview.widget.RecyclerView
 
@@ -29,25 +48,23 @@
         <!--app:layout_anchor="@id/app_bar"-->
 
 
-
-
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/nav_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="#FFF"
-            app:itemTextColor="#313131"
-            app:itemIconTint="#313131"
-            app:headerLayout="@layout/header_nav"
-            app:menu="@menu/drawer_menu"
             android:layout_gravity="start"
+            android:background="#FFF"
+            app:headerLayout="@layout/header_nav"
+            app:itemIconTint="#313131"
+            app:itemTextColor="#313131"
+            app:menu="@menu/drawer_menu"
 
             >
 
         </com.google.android.material.navigation.NavigationView>
 
     </androidx.drawerlayout.widget.DrawerLayout>
-    <!--android:elevation="5dp"estaba en el tutorial xd-->
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
