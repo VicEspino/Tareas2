@@ -147,7 +147,11 @@ public class MainActivity extends AppCompatActivity implements Adapter.ViewHolde
                     adapter.removeItems(adapter.getSelectedItems());
                     mode.finish();
                     return true;
+                case R.id.menu_realizada:
+                    adapter.marcarTareasHechas(adapter.getSelectedItems());
+                    mode.finish();
 
+                    return  true;
                 default:
                     return false;
             }
