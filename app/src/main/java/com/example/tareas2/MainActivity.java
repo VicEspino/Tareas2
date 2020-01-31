@@ -6,12 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,35 +24,131 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements Adapter.ViewHolder.ClickListener, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener , lista_tareasf.OnFragmentInteractionListener,vista_tareaf.OnFragmentInteractionListener {
     @SuppressWarnings("unused")
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private Adapter adapter;
-    private ActionModeCallback actionModeCallback = new ActionModeCallback();
-    private ActionMode actionMode;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToogle;
 
     Toolbar toolbar;
+
+   // private Adapter adapter;
+
+    lista_tareasf fragmentoListaTareas = new lista_tareasf();
+    vista_tareaf fragmentoVistaTarea = new vista_tareaf();
+
+    View.OnClickListener listenerLista = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            floatingActionButton.setImageResource(R.drawable.ic_add_black_24dp);
+            FragmentTransaction fragmentTransaction1 = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction1.replace(R.id.drawerLayout_principal, fragmentoListaTareas);
+            fragmentTransaction1.commit();//usar add, para hacer varios fragments a la vez.
+        }
+    };
+
+    View.OnClickListener listenerVistaTarea = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            floatingActionButton.setImageResource(R.drawable.ic_check_black_24dp);
+            FragmentTransaction fragmentTransaction1 = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction1.replace(R.id.drawerLayout_principal, fragmentoVistaTarea);
+            fragmentTransaction1.commit();
+        }
+    };
+
+    FloatingActionButton floatingActionButton;
+    //indica a que fragment quiero ir
+    private void setListenerFAB(int idResource){
+        switch(idResource){
+            case R.drawable.ic_add_black_24dp:
+                floatingActionButton.setImageResource(idResource);
+
+                FragmentTransaction fragmentTransaction1 = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction1.replace(R.id.drawerLayout_principal, fragmentoListaTareas);
+                fragmentTransaction1.commit();//usar add, para hacer varios fragments a la vez.
+                floatingActionButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.drawerLayout_principal, fragmentoVistaTarea);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();//usar add, para hacer varios fragments a la vez.
+
+                    }
+                });
+                break;
+            case R.drawable.ic_check_black_24dp:
+                floatingActionButton.setImageResource(idResource);
+
+                FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction2.replace(R.id.drawerLayout_principal, fragmentoVistaTarea);
+                fragmentTransaction2.addToBackStack(null);
+                fragmentTransaction2.commit();//usar add, para hacer varios fragments a la vez.
+
+                floatingActionButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+
+
+                    }
+                });
+                break;
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        FloatingActionButton floatingActionButton = findViewById(R.id.fab);
+
+        fragmentoVistaTarea.setComunicacionFragments(new ComunicarFragmentsTemp() {
+            @Override
+            public void enviarMensaje(Item item,int listener, int recursoId) {
+
+                //setListenerFAB(recursoId);
+                if (listener == 1) {
+                    listenerLista.onClick(null);
+                    floatingActionButton.setOnClickListener(listenerVistaTarea);
+                    floatingActionButton.setImageResource(recursoId);
+                    fragmentoListaTareas.addItemToAdapter(item);
+
+                } else {
+                    listenerVistaTarea.onClick(null);
+                    floatingActionButton.setOnClickListener(listenerLista);
+                    floatingActionButton.setImageResource(recursoId);
+                    fragmentoListaTareas.addItemToAdapter(item);
+
+                }
+
+            }
+        });
+
+        getSupportFragmentManager().beginTransaction().
+                add(R.id.drawerLayout_principal, fragmentoListaTareas).commit();
+
+        floatingActionButton = findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, vista_tarea.class);
-                startActivity(intent);            }
+                //fragmentoListaTareas.addItemToAdapter(new Item("aaaa", "asdasd", false));
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.drawerLayout_principal, fragmentoVistaTarea);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();//usar add, para hacer varios fragments a la vez.
+
+                floatingActionButton.setImageResource(R.drawable.ic_check_black_24dp);
+                floatingActionButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        fragmentoVistaTarea.call();//para que guarde todo en un item, y lo regrese, con el id del icono del boton flotante y se setee el nuevo evvento
+
+                    }
+                });
+
+            }
         });
-
-        adapter = new Adapter(this);
-
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
 
         toolbar =findViewById(R.id.toolbarMain);
         setSupportActionBar(toolbar);//ordenar bien estas instrucciones, para que sirva la animacion del boton menu
@@ -73,51 +171,17 @@ public class MainActivity extends AppCompatActivity implements Adapter.ViewHolde
 
     }
 
-    @Override
-    public void onItemClicked(int position) {
-        if (actionMode != null) {
-            toggleSelection(position);
-        } else {
-            //adapter.removeItem(position);
 
-        }
-    }
 
-    @Override
-    public boolean onItemLongClicked(int position) {
-        if (actionMode == null) {
-            actionMode = startSupportActionMode(actionModeCallback);
-            // actionMode = getSupportActionBar().startActionMode(actionModeCallback);
-            //nel setSupportActionBar(this);
-        }
 
-        toggleSelection(position);
-
-        return true;
-    }
-
-    /**
-     * Toggle the selection state of an item.
-     *
-     * If the item was the last one in the selection and is unselected, the selection is stopped.
-     * Note that the selection must already be started (actionMode must not be null).
-     *
-     * @param position Position of the item to toggle the selection state
-     */
-    private void toggleSelection(int position) {
-        adapter.toggleSelection(position);
-        int count = adapter.getSelectedItemCount();
-
-        if (count == 0) {
-            actionMode.finish();
-        } else {
-            actionMode.setTitle(String.valueOf(count) + " Tarea(s)");
-            actionMode.invalidate();
-        }
-    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        int id = menuItem.getItemId();
+        if(menuItem.getItemId()== R.id.btn_ayuda){
+            //adapter.addItem(new Item("aaaa", "asdasd", false));
+            return true;
+        }
         return false;
     }
     @Override
@@ -125,42 +189,12 @@ public class MainActivity extends AppCompatActivity implements Adapter.ViewHolde
         return mToogle.onOptionsItemSelected(item);
     }
 
-    private class ActionModeCallback implements ActionMode.Callback {
-        @SuppressWarnings("unused")
-        private final String TAG = ActionModeCallback.class.getSimpleName();
 
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            mode.getMenuInflater().inflate (R.menu.selected_menu, menu);
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
-        }
-
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.menu_remove:
-                    adapter.removeItems(adapter.getSelectedItems());
-                    mode.finish();
-                    return true;
-                case R.id.menu_realizada:
-                    adapter.marcarTareasHechas(adapter.getSelectedItems());
-                    mode.finish();
-
-                    return  true;
-                default:
-                    return false;
-            }
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            adapter.clearSelection();
-            actionMode = null;
-        }
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        System.out.println(uri);
     }
+
+
+
 }
