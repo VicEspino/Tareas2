@@ -6,16 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,79 +22,35 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener ,
-        lista_tareasf.OnFragmentInteractionListener,
-        vista_tareaf.OnFragmentInteractionListener,
-        cambiarFragment
-{
+public class MainActivity extends AppCompatActivity implements Adapter.ViewHolder.ClickListener, NavigationView.OnNavigationItemSelectedListener {
     @SuppressWarnings("unused")
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    private Adapter adapter;
+    private ActionModeCallback actionModeCallback = new ActionModeCallback();
+    private ActionMode actionMode;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToogle;
 
     Toolbar toolbar;
-
-   // private Adapter adapter;
-
-    lista_tareasf fragmentoListaTareas = new lista_tareasf();
-    vista_tareaf fragmentoVistaTarea = new vista_tareaf();
-
-
-   // FloatingActionButton floatingActionButton;
-    //indica a que fragment quiero ir
-    /*private void setListenerFAB(int idResource){
-        switch(idResource){
-            case R.drawable.ic_add_black_24dp:
-                floatingActionButton.setImageResource(idResource);
-
-                FragmentTransaction fragmentTransaction1 = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction1.replace(R.id.drawerLayout_principal, fragmentoListaTareas);
-                fragmentTransaction1.commit();//usar add, para hacer varios fragments a la vez.
-                floatingActionButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.drawerLayout_principal, fragmentoVistaTarea);
-                        fragmentTransaction.addToBackStack(null);
-                        fragmentTransaction.commit();//usar add, para hacer varios fragments a la vez.
-
-                    }
-                });
-                break;
-            case R.drawable.ic_check_black_24dp:
-                floatingActionButton.setImageResource(idResource);
-
-                FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction2.replace(R.id.drawerLayout_principal, fragmentoVistaTarea);
-                fragmentTransaction2.addToBackStack(null);
-                fragmentTransaction2.commit();//usar add, para hacer varios fragments a la vez.
-
-                floatingActionButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-
-
-                    }
-                });
-                break;
-        }
-    }
-
-    */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FloatingActionButton floatingActionButton = findViewById(R.id.fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, vista_tarea.class);
+                startActivity(intent);            }
+        });
 
+        adapter = new Adapter(this);
 
-
-        getSupportFragmentManager().beginTransaction().
-                add(R.id.drawerLayout_principal, fragmentoListaTareas).commit();
-
-
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
 
         toolbar =findViewById(R.id.toolbarMain);
         setSupportActionBar(toolbar);//ordenar bien estas instrucciones, para que sirva la animacion del boton menu
@@ -121,17 +73,51 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    @Override
+    public void onItemClicked(int position) {
+        if (actionMode != null) {
+            toggleSelection(position);
+        } else {
+            //adapter.removeItem(position);
 
+        }
+    }
 
+    @Override
+    public boolean onItemLongClicked(int position) {
+        if (actionMode == null) {
+            actionMode = startSupportActionMode(actionModeCallback);
+            // actionMode = getSupportActionBar().startActionMode(actionModeCallback);
+            //nel setSupportActionBar(this);
+        }
 
+        toggleSelection(position);
+
+        return true;
+    }
+
+    /**
+     * Toggle the selection state of an item.
+     *
+     * If the item was the last one in the selection and is unselected, the selection is stopped.
+     * Note that the selection must already be started (actionMode must not be null).
+     *
+     * @param position Position of the item to toggle the selection state
+     */
+    private void toggleSelection(int position) {
+        adapter.toggleSelection(position);
+        int count = adapter.getSelectedItemCount();
+
+        if (count == 0) {
+            actionMode.finish();
+        } else {
+            actionMode.setTitle(String.valueOf(count) + " Tarea(s)");
+            actionMode.invalidate();
+        }
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        int id = menuItem.getItemId();
-        if(menuItem.getItemId()== R.id.btn_ayuda){
-            //adapter.addItem(new Item("aaaa", "asdasd", false));
-            return true;
-        }
         return false;
     }
     @Override
@@ -139,57 +125,42 @@ public class MainActivity extends AppCompatActivity implements
         return mToogle.onOptionsItemSelected(item);
     }
 
+    private class ActionModeCallback implements ActionMode.Callback {
+        @SuppressWarnings("unused")
+        private final String TAG = ActionModeCallback.class.getSimpleName();
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-        System.out.println(uri);
-    }
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mode.getMenuInflater().inflate (R.menu.selected_menu, menu);
+            return true;
+        }
 
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
 
-    @Override
-    public void goFragmentLista(/*Item item*/) {
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.menu_remove:
+                    adapter.removeItems(adapter.getSelectedItems());
+                    mode.finish();
+                    return true;
+                case R.id.menu_realizada:
+                    adapter.marcarTareasHechas(adapter.getSelectedItems());
+                    mode.finish();
 
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    return  true;
+                default:
+                    return false;
+            }
+        }
 
-        //lista_tareasf lista_tareasf = new lista_tareasf();
-      //  Bundle bundle = new Bundle();
-        //bundle.putSerializable("objeto_tarea", item);
-        //fragmentoListaTareas.setArguments(bundle);
-
-        //fragmentTransaction.r
-        //fragmentTransaction.show(fragmentoListaTareas);
-        fragmentTransaction.replace(R.id.drawerLayout_principal, fragmentoListaTareas,"fragment_lista_base");
-       //fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();//usar add, para hacer varios fragments a la vez.
-
-    }
-
-    @Override
-    public void goFragmentVistaTarea(Item tarea) {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        vista_tareaf vista_tareaf = new vista_tareaf();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("objeto_tarea",tarea);
-
-        vista_tareaf.setArguments(bundle);
-        fragmentTransaction.add(R.id.drawerLayout_principal,vista_tareaf,"fragment_visa" );
-       // fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();//usar add, para hacer varios fragments a la vez.
-
-    }
-
-    @Override
-    public void onBackPressed() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-
-        Fragment fragment_visa = fragmentManager.findFragmentByTag("fragment_visa");
-
-      /*  fragmentManager.getFragments();
-        fragmentManager.getBackStackEntryCount();
-        fragmentManager.getBackStackEntryAt(0);
-        */super.onBackPressed();
-
-        if(fragment_visa!=null)
-           getSupportFragmentManager().beginTransaction().remove(fragment_visa);
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            adapter.clearSelection();
+            actionMode = null;
+        }
     }
 }

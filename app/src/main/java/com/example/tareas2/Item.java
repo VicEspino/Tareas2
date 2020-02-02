@@ -1,14 +1,9 @@
 package com.example.tareas2;
 
-import androidx.lifecycle.LiveData;
-
-import java.io.Serializable;
-
-public class Item extends LiveData implements Serializable {
+public class Item {
 	private String title;
 	private String subtitle;
 	private boolean active;
-	private Observador observador;
 
 	Item(String title, String subtitle, boolean active) {
 		this.title = title;
@@ -39,15 +34,4 @@ public class Item extends LiveData implements Serializable {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-
-	public void notificarCambio(){
-		if(this.observador!=null){
-			observador.call();
-		}
-	}
-
-	public void setObservador(Observador observador){
-		this.observador = observador;
-	}
-
 }
