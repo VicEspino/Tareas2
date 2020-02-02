@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".VistaTareaFragment"
+    android:background="#FFDBB3"
+
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:padding="8dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtV_diaAgregacion"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:text="Dia de agregacion"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtV_diaEntrega"
+            android:layout_weight="1"
+            android:text="Dia de entrega"
+            android:gravity="end"
+            android:layout_gravity="end"
+            />
+    </LinearLayout>
+
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Materia"
+        />
+    <EditText
+        android:id="@+id/editText_tarea"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="start"
+        android:text="1111aasdddddddddddddddddddddsafasfafsasfffaafsasfasfasdasdasfd"
+        android:hint="Tarea :v"
+        />
+
+
+
+</LinearLayout>

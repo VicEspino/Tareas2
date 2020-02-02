@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -22,7 +24,8 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity
+        implements  NavigationView.OnNavigationItemSelectedListener,CambiarFragment {
     @SuppressWarnings("unused")
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -30,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToogle;
     ListaTareasFragment listaTareasFragment = new ListaTareasFragment();
-
+    VistaTareaFragment vistaTareaFragment = new VistaTareaFragment();
 
     Toolbar toolbar;
     @Override
@@ -41,8 +44,10 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, vista_tarea.class);
-                startActivity(intent);            }
+              //  Intent intent = new Intent(MainActivity.this, vista_tarea.class);
+                //startActivity(intent);
+                goToVistaFragment();
+            }
         });
 
 
@@ -80,4 +85,11 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
     }
 
 
+    @Override
+    public void goToVistaFragment() {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.drawerLayout_principal,vistaTareaFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
 }
