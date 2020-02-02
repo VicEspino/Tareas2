@@ -1,5 +1,5 @@
 package com.example.tareas2;
 
-public interface Mensajero {
+public interface Observador {
     void call();
 }

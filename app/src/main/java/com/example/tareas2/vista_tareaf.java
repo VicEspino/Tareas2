@@ -4,12 +4,19 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.io.Serializable;
 
 
 /**
@@ -20,7 +27,7 @@ import android.widget.EditText;
  * Use the {@link vista_tareaf#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class vista_tareaf extends Fragment implements Mensajero{
+public class vista_tareaf extends Fragment  {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -31,10 +38,12 @@ public class vista_tareaf extends Fragment implements Mensajero{
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    private ComunicarFragmentsTemp comunc;
 
     EditText edMateria;
     EditText edTarea;
+   // private SharedViewModel viewModel;
+    private FloatingActionButton floatingActionButton;
+    private Item objetoTarea;
 
     public vista_tareaf() {
         // Required empty public constructor
@@ -74,8 +83,44 @@ public class vista_tareaf extends Fragment implements Mensajero{
         View contenedorFragment = inflater.inflate(R.layout.fragment_vista_tareaf, container, false);
         edMateria = contenedorFragment.findViewById(R.id.editText_Materia);
         edTarea = contenedorFragment.findViewById(R.id.editText_tarea);
+        this.floatingActionButton = contenedorFragment.findViewById(R.id.fab);
+        this.floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((cambiarFragment)getActivity()).goFragmentLista(/*objetoTarea*/);//dejar solo cambio de fragment sin argumento
+                if(objetoTarea.isActive()){//si es inactivo no modifica nada
+                    objetoTarea.setTitle(edMateria.getText().toString());
+                    objetoTarea.setSubtitle(edTarea.getText().toString());
+                    objetoTarea.setActive(stateItemShowed);
+                    objetoTarea.notificarCambio();
+                }
+
+            }
+        });
+
+        if(this.getArguments()!=null){
+            Item objeto_tarea = (Item) this.getArguments().getSerializable("objeto_tarea");
+            if(objeto_tarea!=null ){
+
+                    this.objetoTarea = objeto_tarea;
+
+                    edMateria.setText(objeto_tarea.getTitle());
+                    edTarea.setText(objeto_tarea.getSubtitle());
+                    this.stateItemShowed = objeto_tarea.isActive();
+
+
+            }
+
+        }
 
         return contenedorFragment;
+    }
+    private boolean stateItemShowed = true;
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -105,20 +150,6 @@ public class vista_tareaf extends Fragment implements Mensajero{
 
 
 
-    public void setComunicacionFragments(ComunicarFragmentsTemp comunc){
-        this.comunc = comunc;
-    }
-    @Override
-    public void call() {
-        if(this.comunc!=null){
-            this.comunc.enviarMensaje(
-                    new Item(this.edMateria.getText().toString(), this.edTarea.getText().toString(), false),
-                    1,
-                    R.drawable.ic_add_black_24dp
-            );
-
-        }
-    }
 
     /**
      * This interface must be implemented by activities that contain this

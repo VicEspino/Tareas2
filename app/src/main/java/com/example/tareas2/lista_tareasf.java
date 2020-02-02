@@ -4,9 +4,14 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -16,6 +21,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageSwitcher;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
 /**
@@ -42,8 +50,8 @@ public class lista_tareasf extends Fragment implements Adapter.ViewHolder.ClickL
     private ActionMode actionMode;
     private ActionModeCallback actionModeCallback = new ActionModeCallback();
     private RecyclerView recyclerView;
-    private ComunicarFragmentsTemp comunc;
 
+    private FloatingActionButton floatingActionButton;
 
     public lista_tareasf() {
         // Required empty public constructor
@@ -76,6 +84,8 @@ public class lista_tareasf extends Fragment implements Adapter.ViewHolder.ClickL
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        adapter = new Adapter(this);
+
 
     }
 
@@ -86,11 +96,26 @@ public class lista_tareasf extends Fragment implements Adapter.ViewHolder.ClickL
         View contenedorDelFragment = inflater.inflate(R.layout.fragment_lista_tareas, container, false);
         this.recyclerView = contenedorDelFragment.findViewById(R.id.recycler_view);
         // Inflate the layout for this fragment
-        adapter = new Adapter(this);
+
 
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
+
+        floatingActionButton = contenedorDelFragment.findViewById(R.id.fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.drawerLayout_principal, new vista_tareaf() /*Cuando se quiere una vista vacia*/);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();//usar add, para hacer varios fragments a la vez.
+                floatingActionButton.setImageResource(R.drawable.ic_check_black_24dp);
+
+            }
+        });
+
+
 
         return contenedorDelFragment;
     }
@@ -133,17 +158,35 @@ public class lista_tareasf extends Fragment implements Adapter.ViewHolder.ClickL
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
-
     @Override
-    public void onItemClicked(int position) {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+
+
+    }
+    private int lastPositionClicked = 0;
+    @Override
+    public void onItemClicked(final int position) {
+        lastPositionClicked = position;
         if (actionMode != null) {
             toggleSelection(position);
         } else {
-            //adapter.removeItem(position);
-
+            ((cambiarFragment)getActivity()).goFragmentVistaTarea(adapter.getItemAt(position));
+           // if(adapter.getItemAt(position).isActive())
+             //   adapter.removeItem(position);
+            if(adapter.getItemAt(position).isActive())
+                adapter.getItemAt(position).setObservador(new Observador() {
+                    @Override
+                    public void call() {
+                        adapter.updateItem(position);
+                    }
+                });
         }
     }
+
+
+
 
     @Override
     public boolean onItemLongClicked(int position) {

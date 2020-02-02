@@ -53,7 +53,13 @@ public class Adapter extends SelectableAdapter<Adapter.ViewHolder> {
 
 	}
 
+	public Item getItemAt(int position){
+		return items.get(position);
+	}
 
+	public void updateItem(int position){
+		notifyItemChanged(position);
+	}
 
 	public void removeItems(List<Integer> positions) {
 		// Reverse-sort the list

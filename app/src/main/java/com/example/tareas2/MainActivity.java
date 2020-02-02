@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,7 +26,12 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener , lista_tareasf.OnFragmentInteractionListener,vista_tareaf.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener ,
+        lista_tareasf.OnFragmentInteractionListener,
+        vista_tareaf.OnFragmentInteractionListener,
+        cambiarFragment
+{
     @SuppressWarnings("unused")
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -38,29 +45,10 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
     lista_tareasf fragmentoListaTareas = new lista_tareasf();
     vista_tareaf fragmentoVistaTarea = new vista_tareaf();
 
-    View.OnClickListener listenerLista = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            floatingActionButton.setImageResource(R.drawable.ic_add_black_24dp);
-            FragmentTransaction fragmentTransaction1 = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction1.replace(R.id.drawerLayout_principal, fragmentoListaTareas);
-            fragmentTransaction1.commit();//usar add, para hacer varios fragments a la vez.
-        }
-    };
 
-    View.OnClickListener listenerVistaTarea = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            floatingActionButton.setImageResource(R.drawable.ic_check_black_24dp);
-            FragmentTransaction fragmentTransaction1 = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction1.replace(R.id.drawerLayout_principal, fragmentoVistaTarea);
-            fragmentTransaction1.commit();
-        }
-    };
-
-    FloatingActionButton floatingActionButton;
+   // FloatingActionButton floatingActionButton;
     //indica a que fragment quiero ir
-    private void setListenerFAB(int idResource){
+    /*private void setListenerFAB(int idResource){
         switch(idResource){
             case R.drawable.ic_add_black_24dp:
                 floatingActionButton.setImageResource(idResource);
@@ -98,57 +86,19 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
                 break;
         }
     }
+
+    */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        fragmentoVistaTarea.setComunicacionFragments(new ComunicarFragmentsTemp() {
-            @Override
-            public void enviarMensaje(Item item,int listener, int recursoId) {
 
-                //setListenerFAB(recursoId);
-                if (listener == 1) {
-                    listenerLista.onClick(null);
-                    floatingActionButton.setOnClickListener(listenerVistaTarea);
-                    floatingActionButton.setImageResource(recursoId);
-                    fragmentoListaTareas.addItemToAdapter(item);
-
-                } else {
-                    listenerVistaTarea.onClick(null);
-                    floatingActionButton.setOnClickListener(listenerLista);
-                    floatingActionButton.setImageResource(recursoId);
-                    fragmentoListaTareas.addItemToAdapter(item);
-
-                }
-
-            }
-        });
 
         getSupportFragmentManager().beginTransaction().
                 add(R.id.drawerLayout_principal, fragmentoListaTareas).commit();
 
-        floatingActionButton = findViewById(R.id.fab);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //fragmentoListaTareas.addItemToAdapter(new Item("aaaa", "asdasd", false));
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.drawerLayout_principal, fragmentoVistaTarea);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();//usar add, para hacer varios fragments a la vez.
 
-                floatingActionButton.setImageResource(R.drawable.ic_check_black_24dp);
-                floatingActionButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        fragmentoVistaTarea.call();//para que guarde todo en un item, y lo regrese, con el id del icono del boton flotante y se setee el nuevo evvento
-
-                    }
-                });
-
-            }
-        });
 
         toolbar =findViewById(R.id.toolbarMain);
         setSupportActionBar(toolbar);//ordenar bien estas instrucciones, para que sirva la animacion del boton menu
@@ -196,5 +146,50 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
     }
 
 
+    @Override
+    public void goFragmentLista(/*Item item*/) {
 
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
+        //lista_tareasf lista_tareasf = new lista_tareasf();
+      //  Bundle bundle = new Bundle();
+        //bundle.putSerializable("objeto_tarea", item);
+        //fragmentoListaTareas.setArguments(bundle);
+
+        //fragmentTransaction.r
+        //fragmentTransaction.show(fragmentoListaTareas);
+        fragmentTransaction.replace(R.id.drawerLayout_principal, fragmentoListaTareas,"fragment_lista_base");
+       //fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();//usar add, para hacer varios fragments a la vez.
+
+    }
+
+    @Override
+    public void goFragmentVistaTarea(Item tarea) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        vista_tareaf vista_tareaf = new vista_tareaf();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("objeto_tarea",tarea);
+
+        vista_tareaf.setArguments(bundle);
+        fragmentTransaction.add(R.id.drawerLayout_principal,vista_tareaf,"fragment_visa" );
+       // fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();//usar add, para hacer varios fragments a la vez.
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        Fragment fragment_visa = fragmentManager.findFragmentByTag("fragment_visa");
+
+      /*  fragmentManager.getFragments();
+        fragmentManager.getBackStackEntryCount();
+        fragmentManager.getBackStackEntryAt(0);
+        */super.onBackPressed();
+
+        if(fragment_visa!=null)
+           getSupportFragmentManager().beginTransaction().remove(fragment_visa);
+    }
 }
