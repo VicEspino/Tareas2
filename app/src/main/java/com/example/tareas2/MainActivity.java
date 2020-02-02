@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +20,8 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements Adapter.ViewHolder.ClickListener, NavigationView.OnNavigationItemSelectedListener {
     @SuppressWarnings("unused")
@@ -41,8 +42,8 @@ public class MainActivity extends AppCompatActivity implements Adapter.ViewHolde
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, vista_tarea.class);
-                startActivity(intent);            }
+                Toast.makeText(MainActivity.this, "Awevo", Toast.LENGTH_SHORT).show();
+            }
         });
 
         adapter = new Adapter(this);
@@ -78,8 +79,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.ViewHolde
         if (actionMode != null) {
             toggleSelection(position);
         } else {
-            //adapter.removeItem(position);
-
+            adapter.removeItem(position);
         }
     }
 
