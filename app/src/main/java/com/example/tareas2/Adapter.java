@@ -22,7 +22,7 @@ public class Adapter extends SelectableAdapter<Adapter.ViewHolder> {
 	private static final int TYPE_INACTIVE = 0;
 	private static final int TYPE_ACTIVE = 1;
 
-	private static final int ITEM_COUNT = 50;
+	private static final int ITEM_COUNT = 9;
 	private List<Item> items;
 
 	private ViewHolder.ClickListener clickListener;
