@@ -22,7 +22,7 @@ public class Adapter extends SelectableAdapter<Adapter.ViewHolder> {
 	private static final int TYPE_INACTIVE = 0;
 	private static final int TYPE_ACTIVE = 1;
 
-	private static final int ITEM_COUNT = 50;
+	private static final int ITEM_COUNT = 5;
 	private List<Item> items;
 
 	private ViewHolder.ClickListener clickListener;
@@ -40,13 +40,26 @@ public class Adapter extends SelectableAdapter<Adapter.ViewHolder> {
 		}
 	}
 
+	public void addItem(Item item){
+		items.add( 0,item);
+		//notifyItemInserted(items.size()-1);
+		notifyItemInserted(0);
+
+	}
+
 	public void removeItem(int position) {
 		items.remove(position);
 		notifyItemRemoved(position);
 
 	}
 
+	public Item getItemAt(int position){
+		return items.get(position);
+	}
 
+	public void updateItem(int position){
+		notifyItemChanged(position);
+	}
 
 	public void removeItems(List<Integer> positions) {
 		// Reverse-sort the list
