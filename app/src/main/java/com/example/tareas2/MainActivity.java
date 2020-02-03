@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         getSupportFragmentManager().beginTransaction().
-                replace(R.id.drawerLayout_principal, listaTareasFragment).commit();
+                replace(R.id.frameLayout_containerFragment, listaTareasFragment).commit();
     }
 
 
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void goToVistaFragment() {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.drawerLayout_principal,vistaTareaFragment);
+        fragmentTransaction.replace(R.id.frameLayout_containerFragment,vistaTareaFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
