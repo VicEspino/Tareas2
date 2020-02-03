@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 
 /**
@@ -24,6 +25,8 @@ public class VistaTareaFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private EditText txtTarea;
+    private EditText txtMateria;
 
 
     public VistaTareaFragment() {
@@ -61,7 +64,12 @@ public class VistaTareaFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_vista_tarea, container, false);
+        View contenedor = inflater.inflate(R.layout.fragment_vista_tarea, container, false);
+
+        this.txtMateria = (EditText)contenedor.findViewById(R.id.editText_materia);
+        this.txtTarea = (EditText)contenedor.findViewById(R.id.editText_tarea);
+
+        return contenedor;
     }
 
 }
