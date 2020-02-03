@@ -4,11 +4,15 @@ package com.example.tareas2;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
 /**
@@ -27,7 +31,8 @@ public class VistaTareaFragment extends Fragment {
     private String mParam2;
     private EditText txtTarea;
     private EditText txtMateria;
-
+    private SharedViewModel sharedViewModel;
+    private boolean estadoTareaActual = true;
 
     public VistaTareaFragment() {
         // Required empty public constructor
@@ -69,7 +74,41 @@ public class VistaTareaFragment extends Fragment {
         this.txtMateria = (EditText)contenedor.findViewById(R.id.editText_materia);
         this.txtTarea = (EditText)contenedor.findViewById(R.id.editText_tarea);
 
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
+        fab.setImageResource(R.drawable.ic_check_black_24dp);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                guardarCambios();
+                getFragmentManager().popBackStack();
+            }
+        });
+
+        sharedViewModel = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
+        sharedViewModel.getDataIn().observe(getViewLifecycleOwner(), new Observer<Item>() {
+            @Override
+            public void onChanged(Item item) {
+                if(item!=null){
+                    txtMateria.setText(item.getTitle());
+                    txtTarea.setText(item.getSubtitle());
+                    estadoTareaActual = item.isActive();
+                    //falta guardar estado
+                }else{
+                    txtMateria.setText("Objeto nulo");
+                    txtTarea.setText("x2 lo de arriba");
+                    estadoTareaActual = false;//cuando el objeto es nulo, significa nueva tarea, por lo tanto
+                }
+            }
+        });
+
         return contenedor;
+    }
+
+    public void guardarCambios(){
+        sharedViewModel.setDataOut(
+                new Item(txtMateria.getText().toString(), txtTarea.getText().toString(), estadoTareaActual)
+        );
+
     }
 
 }

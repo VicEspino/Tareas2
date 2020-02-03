@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -15,6 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
 /**
@@ -35,6 +39,8 @@ public class ListaTareasFragment extends Fragment implements Adapter.ViewHolder.
 
     private Adapter adapter;
     private ActionMode actionMode;
+    SharedViewModel sharedViewModel;
+
 
     public ListaTareasFragment() {
         // Required empty public constructor
@@ -81,6 +87,25 @@ public class ListaTareasFragment extends Fragment implements Adapter.ViewHolder.
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
+
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
+        fab.setImageResource(R.drawable.ic_add_black_24dp);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sharedViewModel.setDataIn(null);
+                ((CambiarFragment)getActivity()).goToVistaFragment();
+            }
+        });
+
+        sharedViewModel = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
+        sharedViewModel.getDataOut().observe(getViewLifecycleOwner(), new Observer<Item>() {
+            @Override
+            public void onChanged(Item item) {
+                adapter.addItem(item);
+            }
+        });
+
         return contenedor;
     }
 
@@ -91,7 +116,10 @@ public class ListaTareasFragment extends Fragment implements Adapter.ViewHolder.
             toggleSelection(position);
         } else {
             //adapter.removeItem(position);
-
+            Item itemAt = adapter.getItemAt(position);
+            sharedViewModel.setDataIn(itemAt);
+            adapter.removeItem(position);
+            ((CambiarFragment)getActivity()).goToVistaFragment();
         }
     }
 

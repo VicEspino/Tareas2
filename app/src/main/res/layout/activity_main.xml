@@ -68,8 +68,7 @@
         app:fabSize="normal"
         app:backgroundTint="@color/colorPrimary"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
-        app:layout_anchor="@id/drawerLayout_principal"
-        app:layout_anchorGravity="bottom|right|end"
+
         />
 
 

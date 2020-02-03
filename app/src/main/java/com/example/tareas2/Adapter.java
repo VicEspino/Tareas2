@@ -88,6 +88,23 @@ public class Adapter extends SelectableAdapter<Adapter.ViewHolder> {
 		}
 		notifyItemRangeRemoved(positionStart, itemCount);
 	}
+	public Item getItemAt(int position){
+		return items.get(position);
+	}
+
+	public void updateItem(int position){
+		notifyItemChanged(position);
+	}
+
+	public void addItem(Item item){
+		items.add( 0,item);
+		//notifyItemInserted(items.size()-1);
+		notifyItemInserted(0);
+
+	}
+
+
+
 
 	@Override
 	public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
