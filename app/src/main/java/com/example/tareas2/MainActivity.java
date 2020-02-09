@@ -5,17 +5,17 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 
-import android.content.Intent;
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.Menu;
+import android.os.Environment;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -23,9 +23,25 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+
+import archivos.PersistenciaTareas;
+import models.CambiarFragment;
+import models.Item;
 
 public class MainActivity extends AppCompatActivity
-        implements  NavigationView.OnNavigationItemSelectedListener,CambiarFragment {
+        implements  NavigationView.OnNavigationItemSelectedListener, CambiarFragment {
     @SuppressWarnings("unused")
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -50,14 +66,17 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED){
 
+        }
         toolbar =findViewById(R.id.toolbarMain);
         setSupportActionBar(toolbar);//ordenar bien estas instrucciones, para que sirva la animacion del boton menu
 
         mDrawerLayout = findViewById(R.id.drawerLayout_principal);
         mToogle = new ActionBarDrawerToggle(MainActivity.this, mDrawerLayout, R.string.open,R.string.close);
         mDrawerLayout.addDrawerListener(mToogle);
-
         //toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -72,6 +91,18 @@ public class MainActivity extends AppCompatActivity
 
         getSupportFragmentManager().beginTransaction().
                 replace(R.id.frameLayout_containerFragment, listaTareasFragment).commit();
+
+        //PersistenciaTareas persistenciaTareas =  PersistenciaTareas.getConfiguracion();
+        //persistenciaTareas.getItems();
+       /* Item item = new Item("Quimica", "Comer", true);
+        Item item2 = new Item("Quimica2", "Comer", true);
+
+        ArrayList<Item> items = new ArrayList<>();
+        items.add(item);
+        items.add(item2);
+
+        PersistenciaTareas.setConfiguracion(new PersistenciaTareas(items));
+*/
     }
 
 
@@ -91,5 +122,9 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.replace(R.id.frameLayout_containerFragment,vistaTareaFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+
     }
-}
+
+
+
+ }

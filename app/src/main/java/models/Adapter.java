@@ -1,19 +1,34 @@
-package com.example.tareas2;
+package models;
 
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.example.tareas2.R;
+import com.google.gson.Gson;
+
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+
+import archivos.PersistenciaTareas;
 
 public class Adapter extends SelectableAdapter<Adapter.ViewHolder> {
 	@SuppressWarnings("unused")
@@ -33,11 +48,15 @@ public class Adapter extends SelectableAdapter<Adapter.ViewHolder> {
 		this.clickListener = clickListener;
 
 		// Create some items
-		Random random = new Random();
-		items = new ArrayList<>();
-		for (int i = 0; i < ITEM_COUNT; ++i) {
+		//Random random = new Random();
+		PersistenciaTareas persistenciaTareas =  PersistenciaTareas.getConfiguracion();
+		//items = new ArrayList<>();//persistenciaTareas.getItems();
+		items = persistenciaTareas.getItems();
+		/*for (int i = 0; i < ITEM_COUNT; ++i) {
 			items.add(new Item("Item " + i, "This is the item number " + i, random.nextBoolean()));
-		}
+		}*/
+
+
 	}
 
 	public void removeItem(int position) {
@@ -103,8 +122,9 @@ public class Adapter extends SelectableAdapter<Adapter.ViewHolder> {
 
 	}
 
-
-
+	public void guardarTareas(){
+		PersistenciaTareas.setConfiguracion(new PersistenciaTareas(this.items));
+	}
 
 	@Override
 	public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

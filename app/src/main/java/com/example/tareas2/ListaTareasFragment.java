@@ -20,6 +20,11 @@ import android.view.ViewGroup;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import models.Adapter;
+import models.CambiarFragment;
+import models.Item;
+import models.SharedViewModel;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -103,6 +108,7 @@ public class ListaTareasFragment extends Fragment implements Adapter.ViewHolder.
             @Override
             public void onChanged(Item item) {
                 adapter.addItem(item);
+                adapter.guardarTareas();
             }
         });
 
@@ -118,7 +124,8 @@ public class ListaTareasFragment extends Fragment implements Adapter.ViewHolder.
             //adapter.removeItem(position);
             Item itemAt = adapter.getItemAt(position);
             sharedViewModel.setDataIn(itemAt);
-            adapter.removeItem(position);
+            if(!itemAt.isActive())//para que no se borre (para luego agregarse on TOP)
+                adapter.removeItem(position);
             ((CambiarFragment)getActivity()).goToVistaFragment();
         }
     }
@@ -178,11 +185,12 @@ public class ListaTareasFragment extends Fragment implements Adapter.ViewHolder.
                 case R.id.menu_remove:
                     adapter.removeItems(adapter.getSelectedItems());
                     mode.finish();
+                    adapter.guardarTareas();
                     return true;
                 case R.id.menu_realizada:
                     adapter.marcarTareasHechas(adapter.getSelectedItems());
                     mode.finish();
-
+                    adapter.guardarTareas();
                     return  true;
                 default:
                     return false;

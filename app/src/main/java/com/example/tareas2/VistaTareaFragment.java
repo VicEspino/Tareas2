@@ -14,6 +14,9 @@ import android.widget.EditText;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import models.Item;
+import models.SharedViewModel;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -94,8 +97,8 @@ public class VistaTareaFragment extends Fragment {
                     estadoTareaActual = item.isActive();
                     //falta guardar estado
                 }else{
-                    txtMateria.setText("Objeto nulo");
-                    txtTarea.setText("x2 lo de arriba");
+                    txtMateria.setText("");
+                    txtTarea.setText("");
                     estadoTareaActual = false;//cuando el objeto es nulo, significa nueva tarea, por lo tanto
                 }
             }
@@ -105,9 +108,10 @@ public class VistaTareaFragment extends Fragment {
     }
 
     public void guardarCambios(){
-        sharedViewModel.setDataOut(
-                new Item(txtMateria.getText().toString(), txtTarea.getText().toString(), estadoTareaActual)
-        );
+        if(!estadoTareaActual)//cuando sea falso (tarea pendiente) se añadirá a la lista del otro fragment
+            sharedViewModel.setDataOut(
+                    new Item(txtMateria.getText().toString(), txtTarea.getText().toString(), estadoTareaActual)
+            );
 
     }
 

@@ -1,4 +1,4 @@
-package com.example.tareas2;
+package models;
 
 import android.util.SparseBooleanArray;
 

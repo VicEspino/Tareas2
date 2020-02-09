@@ -1,8 +1,10 @@
-package com.example.tareas2;
+package models;
 
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import models.Item;
 
 public class SharedViewModel extends ViewModel {
 
