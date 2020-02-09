@@ -187,6 +187,7 @@ public class Adapter extends SelectableAdapter<Adapter.ViewHolder> {
 
 		// Span the item if active
 		final ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
+		//aquí cambia la forma del viewholder, si es cuadrado y rectangulo
 		if (lp instanceof StaggeredGridLayoutManager.LayoutParams) {
 			StaggeredGridLayoutManager.LayoutParams sglp = (StaggeredGridLayoutManager.LayoutParams) lp;
 			sglp.setFullSpan(item.isActive());
