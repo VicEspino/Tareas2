@@ -91,7 +91,7 @@ public class ListaTareasFragment extends Fragment implements Adapter.ViewHolder.
         RecyclerView recyclerView = contenedor.findViewById(R.id.recycler_view);
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
 
         FloatingActionButton fab = getActivity().findViewById(R.id.fab);
         fab.setImageResource(R.drawable.ic_add_black_24dp);
@@ -107,8 +107,14 @@ public class ListaTareasFragment extends Fragment implements Adapter.ViewHolder.
         sharedViewModel.getDataOut().observe(getViewLifecycleOwner(), new Observer<Item>() {
             @Override
             public void onChanged(Item item) {
-                adapter.addItem(item);
-                adapter.guardarTareas();
+                if(item!=null){
+                    adapter.addItem(item);
+                    adapter.guardarTareas();
+                    sharedViewModel.setDataOut(null);
+                    //para que si se crea un nuevo item y se guarda, y luego se mira alguno, pero no se guarda
+                    //no se vuelva  a agregar
+                }
+
             }
         });
 

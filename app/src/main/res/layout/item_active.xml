@@ -19,13 +19,31 @@
 		android:orientation="vertical"
 		android:padding="8dp" >
 
-		<TextView
-			android:id="@+id/title"
+		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:singleLine="true"
-			android:textColor="@color/material_deep_teal_500"
-			style="@style/Base.TextAppearance.AppCompat.Headline" />
+			android:orientation="horizontal"
+			android:weightSum="2"
+			>
+			<TextView
+				android:id="@+id/title"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				android:textColor="@color/material_deep_teal_500"
+				android:text="@string/titulo_prueba"
+				android:layout_weight="1"
+				style="@style/Base.TextAppearance.AppCompat.Headline" />
+			<TextView
+				android:layout_width="0dp"
+				android:layout_height="match_parent"
+ 				android:gravity="center"
+				android:layout_weight="1"
+				android:text="fecha"
+				android:id="@+id/txtV_diaEntrega"
+				/>
+		</LinearLayout>
+
 
 		<TextView
 			android:id="@+id/subtitle"
@@ -33,6 +51,7 @@
 			android:layout_height="0dp"
 			android:layout_weight="1"
 			android:textColor="@color/material_blue_grey_900"
+			android:text="@string/subtitulo_prueba"
 			style="@style/Base.TextAppearance.AppCompat.Subhead" />
 
 	</LinearLayout>

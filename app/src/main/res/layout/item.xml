@@ -13,24 +13,44 @@
 		android:layout_height="match_parent"
 		android:background="@color/selected_overlay"
 		android:visibility="invisible" />
+
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:orientation="vertical"
 		android:padding="8dp" >
 
-		<TextView
-			android:id="@+id/title"
+		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:singleLine="true"
-			style="@style/Base.TextAppearance.AppCompat.Headline" />
+			android:orientation="horizontal"
+			android:weightSum="2"
+			>
+			<TextView
+				android:id="@+id/title"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				android:text="@string/titulo_prueba"
+				android:layout_weight="1"
+				style="@style/Base.TextAppearance.AppCompat.Headline" />
+			<TextView
+				android:layout_width="0dp"
+				android:layout_height="match_parent"
+				android:gravity="center"
+				android:layout_weight="1"
+				android:id="@+id/txtV_diaEntrega"
+				android:text="fecha"
+				/>
+		</LinearLayout>
+
 
 		<TextView
 			android:id="@+id/subtitle"
 			android:layout_width="match_parent"
 			android:layout_height="0dp"
 			android:layout_weight="1"
+			android:text="@string/subtitulo_prueba"
 			style="@style/Base.TextAppearance.AppCompat.Subhead" />
 
 	</LinearLayout>

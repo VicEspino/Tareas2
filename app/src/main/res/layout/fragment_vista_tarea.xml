@@ -23,7 +23,7 @@
             android:id="@+id/txtV_diaAgregacion"
             android:layout_weight="1"
             android:gravity="start"
-            android:text="Dia de agregacion"
+            android:text="Dia de agregacion: "
             />
 
         <TextView
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/txtV_diaEntrega"
             android:layout_weight="1"
-            android:text="Dia de entrega"
+            android:text="Dia de entrega: "
             android:gravity="end"
             android:layout_gravity="end"
             />

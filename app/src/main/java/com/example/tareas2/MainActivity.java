@@ -7,6 +7,7 @@ import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 
@@ -50,13 +51,13 @@ public class MainActivity extends AppCompatActivity
     private ActionBarDrawerToggle mToogle;
     ListaTareasFragment listaTareasFragment = new ListaTareasFragment();
     VistaTareaFragment vistaTareaFragment = new VistaTareaFragment();
-
+    FloatingActionButton floatingActionButton;
     Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        FloatingActionButton floatingActionButton = findViewById(R.id.fab);
+        floatingActionButton = findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,5 +127,15 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
 
- }
+       /* Fragment fragmentActivo = getSupportFragmentManager().findFragmentById(R.id.frameLayout_containerFragment);
+        if(fragmentActivo == vistaTareaFragment){
+            floatingActionButton.performClick();
+        }else{
+            super.onBackPressed();
+        }*/
+    }
+}
